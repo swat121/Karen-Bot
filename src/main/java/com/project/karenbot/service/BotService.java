@@ -20,7 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 public class BotService extends TelegramLongPollingBot {
     private final String chatID = "250412288";
-    private boolean statusMessage;
+    private final String url = "http://localhost:8080//";
     private final RestTemplate restTemplate;
     @Override
     public String getBotUsername() {
@@ -37,46 +37,19 @@ public class BotService extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         Message message = update.getMessage();
         if (message != null && message.hasText()) {
-            if (statusMessage) {
-                String text = message.getText();
-                String fooResourceUrl
-                        = "http://localhost:8080//garry/message/";
-                ResponseEntity<String> response
-                        = restTemplate.getForEntity(fooResourceUrl+text, String.class);
-                execute(SendMessage
-                        .builder()
-                        .chatId(chatID)
-                        .text(response.getBody())
-                        .build());
-                statusMessage = false;
-            } else {
                 switch (message.getText()) {
                     case "/start":
-                        sendMsgForButton(message, new String[]{"Garry"}, new String[]{});
+                        sendMsgForButton(message, new String[]{"Gazebo"}, new String[]{});
                         break;
-                    case "Garry":
-                        sendMsgForButton(message, new String[]{"Temperature", "Backlight On", "Backlight Off"}, new String[]{"Message"});
-                        break;
-                    case "Temperature":
-                        String fooResourceUrl
-                                = "http://localhost:8080//garry/temperature";
+                    case "Gazebo":
                         ResponseEntity<String> response
-                                = restTemplate.getForEntity(fooResourceUrl, String.class);
+                                = restTemplate.getForEntity(url + "garry/setting/relay1", String.class);
                         execute(SendMessage
                                 .builder()
                                 .chatId(chatID)
                                 .text(response.getBody())
                                 .build());
                         break;
-                    case "Message":
-                        execute(SendMessage
-                                .builder()
-                                .chatId(chatID)
-                                .text("Введите текст")
-                                .build());
-                        statusMessage = true;
-                        break;
-                }
             }
         }
     }
@@ -86,7 +59,7 @@ public class BotService extends TelegramLongPollingBot {
         sendMessage.enableMarkdown(true);
         sendMessage.setChatId(message.getChatId().toString());
         sendMessage.setReplyToMessageId(message.getMessageId());
-        sendMessage.setText(message.getText());
+        sendMessage.setText("okay :)");
         setButton(sendMessage, nameFirstButtons, nameSecondButtons);
         execute(sendMessage);
     }
