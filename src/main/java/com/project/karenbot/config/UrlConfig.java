@@ -8,5 +8,6 @@ import java.util.Map;
 @Data
 @ConfigurationProperties(prefix = "service")
 public class UrlConfig {
-    private Map<String,String> resource;
+    private Map<Long, String> resource;
+    private Map<String, String> credential;
 }

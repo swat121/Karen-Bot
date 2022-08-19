@@ -22,60 +22,77 @@ import java.util.Objects;
 @AllArgsConstructor
 public class BotService extends TelegramLongPollingBot {
     private final UrlConfig urlConfig;
-    private ArrayList<String> chatID;
-    private boolean status;
     private final String url = "http://192.168.0.102:8080/";
     private final RestTemplate restTemplate;
     @Override
     public String getBotUsername() {
-        return "@wikardBot";
+        return urlConfig.getCredential().get("idTest");
     }
 
     @Override
     public String getBotToken() {
-        return "5279096564:AAFZi7VtekLt6_MrFwA7cd7zuUuj6NOd4lM";
+        return urlConfig.getCredential().get("tokenTest");
     }
 
     @SneakyThrows
     @Override
     public void onUpdateReceived(Update update) {
-        chatID.add("250412288");
-        chatID.add("600017498");
         Message message = update.getMessage();
         if (message != null && message.hasText()) {
-            String chat = message.getChatId().toString();
-                switch (message.getText()) {
-                    case "/start":
-                        sendMsgForButton(message, new String[]{"Gazebo"}, new String[]{});
-                        break;
-                    case "Gazebo":
-                        for (int i = 0; i < chatID.size(); i++){
-                            if (Objects.equals(chatID.get(i), chat)){
-                                status = true;
-                                break;
-                            }else {
-                                status = false;
-                            }
-                        }
-                        if (status) {
-                            ResponseEntity<String> response
-                                    = restTemplate.getForEntity(url + "patric/setting/relay1", String.class);
-                            execute(SendMessage
-                                    .builder()
-                                    .chatId(message.getChatId().toString())
-                                    .text(response.getBody())
-                                    .build());
-                        }
-                        break;
-                    case "ID":
-                        execute(SendMessage
-                                .builder()
-                                .chatId(message.getChatId().toString())
-                                .text(message.getChatId().toString())
-                                .build());
-                        break;
+            switch (message.getText()) {
+                case "/start":
+                    sendMsgForButton(message, new String[]{"Main light","Back light"}, new String[]{"Help", "Status"});
+                    break;
+                case "/id":
+                    sendMsg(message, message.getChatId().toString());
+                    break;
+                default:
+                    vipCommand(message);
+                    break;
             }
         }
+    }
+    @SneakyThrows
+    public void vipCommand(Message message){
+        ResponseEntity<String> response;
+        if (urlConfig.getResource().get(message.getChatId()) != null) {
+            switch (message.getText()){
+                case "Main light":
+                    sendMsg(message, "Send data");
+                    response
+                            = restTemplate.getForEntity(url + "patric/setting/relay1", String.class);
+                    sendMsg(message, response.getBody());
+                    break;
+                case "Back light":
+                    sendMsg(message, "Send data");
+                    response
+                            = restTemplate.getForEntity(url + "patric/setting/relay2", String.class);
+                    sendMsg(message, response.getBody());
+                    break;
+                case "Status":
+                    sendMsg(message, "Send data");
+                    response
+                            = restTemplate.getForEntity(url + "patric/status", String.class);
+                    sendMsg(message, response.getBody());
+                    break;
+                case "Help":
+                    sendMsg(message, "Send data");
+                    response
+                            = restTemplate.getForEntity(url + "patric/help", String.class);
+                    sendMsg(message, response.getBody());
+                    break;
+            }
+        } else {
+            sendMsg(message, "Sorry, but you are not on the user list or command not found\n(you can go fuck yourself)");
+        }
+    }
+    @SneakyThrows
+    public void sendMsg(Message message, String text){
+        execute(SendMessage
+                .builder()
+                .chatId(message.getChatId().toString())
+                .text(text)
+                .build());
     }
     @SneakyThrows
     public void sendMsgForButton(Message message, String[] nameFirstButtons, String[] nameSecondButtons) {
@@ -83,7 +100,7 @@ public class BotService extends TelegramLongPollingBot {
         sendMessage.enableMarkdown(true);
         sendMessage.setChatId(message.getChatId().toString());
         sendMessage.setReplyToMessageId(message.getMessageId());
-        sendMessage.setText("okay :)");
+        sendMessage.setText("You have some buttons for control home");
         setButton(sendMessage, nameFirstButtons, nameSecondButtons);
         execute(sendMessage);
     }

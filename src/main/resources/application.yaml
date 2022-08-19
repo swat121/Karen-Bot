@@ -1,4 +1,9 @@
 service:
-  resourse:
-    250412288: "250412288"
-    600017498: "600017498"
+  resource:
+    250412288: "Denis"
+    600017498: "Igor"
+  credential:
+    id: "@wikardBot"
+    token: "5279096564:AAFZi7VtekLt6_MrFwA7cd7zuUuj6NOd4lM"
+    idTest: "@test_wikardBot"
+    tokenTest: "5631827691:AAHsgTeMvsmW1HCN54Pqb2O8pyRAMqUF21o"
