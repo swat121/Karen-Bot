@@ -22,7 +22,6 @@ import java.util.Objects;
 @AllArgsConstructor
 public class BotService extends TelegramLongPollingBot {
     private final UrlConfig urlConfig;
-    private final String url = "http://192.168.0.102:8080/";
     private final RestTemplate restTemplate;
     @Override
     public String getBotUsername() {
@@ -60,25 +59,25 @@ public class BotService extends TelegramLongPollingBot {
                 case "Main light":
                     sendMsg(message, "Send data");
                     response
-                            = restTemplate.getForEntity(url + "patric/setting/relay1", String.class);
+                            = restTemplate.getForEntity(urlConfig.getResource().get("Patric") + "/setting/relay1", String.class);
                     sendMsg(message, response.getBody());
                     break;
                 case "Back light":
                     sendMsg(message, "Send data");
                     response
-                            = restTemplate.getForEntity(url + "patric/setting/relay2", String.class);
+                            = restTemplate.getForEntity(urlConfig.getResource().get("Patric") + "/setting/relay2", String.class);
                     sendMsg(message, response.getBody());
                     break;
                 case "Status":
                     sendMsg(message, "Send data");
                     response
-                            = restTemplate.getForEntity(url + "patric/status", String.class);
+                            = restTemplate.getForEntity(urlConfig.getResource().get("Patric") + "/status", String.class);
                     sendMsg(message, response.getBody());
                     break;
                 case "Help":
                     sendMsg(message, "Send data");
                     response
-                            = restTemplate.getForEntity(url + "patric/help", String.class);
+                            = restTemplate.getForEntity(urlConfig.getResource().get("Patric") + "/help", String.class);
                     sendMsg(message, response.getBody());
                     break;
             }
