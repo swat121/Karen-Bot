@@ -25,12 +25,12 @@ public class BotService extends TelegramLongPollingBot {
     private final RestTemplate restTemplate;
     @Override
     public String getBotUsername() {
-        return urlConfig.getCredential().get("idTest");
+        return urlConfig.getCredential().get("id");
     }
 
     @Override
     public String getBotToken() {
-        return urlConfig.getCredential().get("tokenTest");
+        return urlConfig.getCredential().get("token");
     }
 
     @SneakyThrows
@@ -54,35 +54,36 @@ public class BotService extends TelegramLongPollingBot {
     @SneakyThrows
     public void vipCommand(Message message){
         ResponseEntity<String> response;
-        if (urlConfig.getResource().get(message.getChatId()) != null) {
-            switch (message.getText()){
-                case "Main light":
-                    sendMsg(message, "Send data");
-                    response
-                            = restTemplate.getForEntity(urlConfig.getResource().get("Patric") + "/setting/relay1", String.class);
-                    sendMsg(message, response.getBody());
-                    break;
-                case "Back light":
-                    sendMsg(message, "Send data");
-                    response
-                            = restTemplate.getForEntity(urlConfig.getResource().get("Patric") + "/setting/relay2", String.class);
-                    sendMsg(message, response.getBody());
-                    break;
-                case "Status":
-                    sendMsg(message, "Send data");
-                    response
-                            = restTemplate.getForEntity(urlConfig.getResource().get("Patric") + "/status", String.class);
-                    sendMsg(message, response.getBody());
-                    break;
-                case "Help":
-                    sendMsg(message, "Send data");
-                    response
-                            = restTemplate.getForEntity(urlConfig.getResource().get("Patric") + "/help", String.class);
-                    sendMsg(message, response.getBody());
-                    break;
+        if (urlConfig.getChatId().get(message.getChatId()) != null) {
+            try {
+                sendMsg(message, "Send: " + "'"+message.getText()+"'");
+                switch (message.getText()) {
+                    case "Main light":
+                        response
+                                = restTemplate.getForEntity(urlConfig.getResource().get("Patric") + "/setting/relay1", String.class);
+                        sendMsg(message, response.getBody());
+                        break;
+                    case "Back light":
+                        response
+                                = restTemplate.getForEntity(urlConfig.getResource().get("Patric") + "/setting/relay2", String.class);
+                        sendMsg(message, response.getBody());
+                        break;
+                    case "Status":
+                        response
+                                = restTemplate.getForEntity(urlConfig.getResource().get("Patric") + "/status", String.class);
+                        sendMsg(message, response.getBody());
+                        break;
+                    case "Help":
+                        response
+                                = restTemplate.getForEntity(urlConfig.getResource().get("Patric") + "/help", String.class);
+                        sendMsg(message, response.getBody());
+                        break;
+                }
+            } catch (Exception e){
+                sendMsg(message, "Karen does not answer");
             }
         } else {
-            sendMsg(message, "Sorry, but you are not on the user list or command not found\n(you can go fuck yourself)");
+            sendMsg(message, "Sorry, but you are not on the user list or command not found\n\n(you can go fuck yourself)");
         }
     }
     @SneakyThrows
@@ -99,7 +100,7 @@ public class BotService extends TelegramLongPollingBot {
         sendMessage.enableMarkdown(true);
         sendMessage.setChatId(message.getChatId().toString());
         sendMessage.setReplyToMessageId(message.getMessageId());
-        sendMessage.setText("You have some buttons for control home");
+        sendMessage.setText("You have some buttons for control home (Patric)");
         setButton(sendMessage, nameFirstButtons, nameSecondButtons);
         execute(sendMessage);
     }
