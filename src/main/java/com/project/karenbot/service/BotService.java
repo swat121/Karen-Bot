@@ -1,6 +1,7 @@
 package com.project.karenbot.service;
 
 import com.project.karenbot.config.UrlConfig;
+import com.project.karenbot.model.DataResponse;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +41,7 @@ public class BotService extends TelegramLongPollingBot {
         if (message != null && message.hasText()) {
             switch (message.getText()) {
                 case "/start":
-                    sendMsgForButton(message, new String[]{"Main light","Back light"}, new String[]{"Help", "Status"});
+                    sendMsgForButton(message, new String[]{"Main light","Back light"}, new String[]{"Status"});
                     break;
                 case "/id":
                     sendMsg(message, message.getChatId().toString());
@@ -53,30 +54,29 @@ public class BotService extends TelegramLongPollingBot {
     }
     @SneakyThrows
     public void vipCommand(Message message){
-        ResponseEntity<String> response;
+        DataResponse dataResponse;
+        String response;
         if (urlConfig.getChatId().get(message.getChatId()) != null) {
             try {
                 sendMsg(message, "Send: " + "'"+message.getText()+"'");
                 switch (message.getText()) {
                     case "Main light":
                         response
-                                = restTemplate.getForEntity(urlConfig.getResource().get("Patric") + "/setting/relay1", String.class);
-                        sendMsg(message, response.getBody());
+                                = getFromESP(urlConfig.getResource().get("Patric") + "/setting/relay1", String.class);
+                        sendMsg(message, response);
                         break;
                     case "Back light":
                         response
-                                = restTemplate.getForEntity(urlConfig.getResource().get("Patric") + "/setting/relay2", String.class);
-                        sendMsg(message, response.getBody());
+                                = getFromESP(urlConfig.getResource().get("Patric") + "/setting/relay2", String.class);
+                        sendMsg(message, response);
                         break;
                     case "Status":
-                        response
-                                = restTemplate.getForEntity(urlConfig.getResource().get("Patric") + "/status", String.class);
-                        sendMsg(message, response.getBody());
-                        break;
-                    case "Help":
-                        response
-                                = restTemplate.getForEntity(urlConfig.getResource().get("Patric") + "/help", String.class);
-                        sendMsg(message, response.getBody());
+                        dataResponse
+                                = getFromESP(urlConfig.getResource().get("Patric") + "/status", DataResponse.class);
+                        sendMsg(message,
+                                "Name: " + dataResponse.getName() + "\n" +
+                                        "Main light: " + dataResponse.getRelay1() + "\n" +
+                                        "Back light: " + dataResponse.getRelay2());
                         break;
                 }
             } catch (Exception e){
@@ -124,5 +124,8 @@ public class BotService extends TelegramLongPollingBot {
         keyboardRowList.add(keyboardRowFirst);
         keyboardRowList.add(keyboardRowSecond);
         replyKeyboardMarkup.setKeyboard(keyboardRowList);
+    }
+    private <T> T getFromESP(String url, Class<T> responseType) {
+        return restTemplate.getForEntity(url, responseType).getBody();
     }
 }
