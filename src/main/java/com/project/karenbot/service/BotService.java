@@ -16,6 +16,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -54,6 +55,9 @@ public class BotService extends TelegramLongPollingBot {
     }
     @SneakyThrows
     public void vipCommand(Message message){
+        HashMap<String, String> stat = new HashMap<>();
+        stat.put("0", "On");
+        stat.put("1", "Off");
         DataResponse dataResponse;
         String response;
         if (urlConfig.getChatId().get(message.getChatId()) != null) {
@@ -75,8 +79,8 @@ public class BotService extends TelegramLongPollingBot {
                                 = getFromESP(urlConfig.getResource().get("Patric") + "/status", DataResponse.class);
                         sendMsg(message,
                                 "Name: " + dataResponse.getName() + "\n" +
-                                        "Main light: " + dataResponse.getRelay1() + "\n" +
-                                        "Back light: " + dataResponse.getRelay2());
+                                        "Main light: " + stat.get(dataResponse.getRelay1()) + "\n" +
+                                        "Back light: " + stat.get(dataResponse.getRelay2()));
                         break;
                 }
             } catch (Exception e){
