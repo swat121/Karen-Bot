@@ -42,7 +42,7 @@ public class BotService extends TelegramLongPollingBot {
         if (message != null && message.hasText()) {
             switch (message.getText()) {
                 case "/start":
-                    sendMsgForButton(message, new String[]{"Main light","Back light"}, new String[]{"Status"});
+                    sendMsgForButton(message, new String[]{"Main light","Back light"}, new String[]{"Open","Status"});
                     break;
                 case "/id":
                     sendMsg(message, message.getChatId().toString());
@@ -55,9 +55,12 @@ public class BotService extends TelegramLongPollingBot {
     }
     @SneakyThrows
     public void vipCommand(Message message){
-        HashMap<String, String> stat = new HashMap<>();
-        stat.put("0", "On");
-        stat.put("1", "Off");
+        HashMap<String, String> relayStatus = new HashMap<>();
+        relayStatus.put("0", "On");
+        relayStatus.put("1", "Off");
+        HashMap<String, String> status = new HashMap<>();
+        status.put("1", "On");
+        status.put("0", "Off");
         DataResponse dataResponse;
         String response;
         if (urlConfig.getChatId().get(message.getChatId()) != null) {
@@ -67,20 +70,25 @@ public class BotService extends TelegramLongPollingBot {
                     case "Main light":
                         response
                                 = getFromESP(urlConfig.getResource().get("Patric") + "/setting/relay1", String.class);
-                        sendMsg(message, stat.get(response));
+                        sendMsg(message, relayStatus.get(response));
                         break;
                     case "Back light":
                         response
-                                = getFromESP(urlConfig.getResource().get("Patric") + "/setting/relay2", String.class);
-                        sendMsg(message, stat.get(response));
+                                = getFromESP(urlConfig.getResource().get("Patric") + "/setting/light", String.class);
+                        sendMsg(message, status.get(response));
                         break;
+                    case "Open":
+                        response
+                                = getFromESP(urlConfig.getResource().get("Patric") + "/setting/relay2", String.class);
+                        sendMsg(message, relayStatus.get(response));
                     case "Status":
                         dataResponse
                                 = getFromESP(urlConfig.getResource().get("Patric") + "/status", DataResponse.class);
                         sendMsg(message,
                                 "Name: " + dataResponse.getName() + "\n" +
-                                        "Main light: " + stat.get(dataResponse.getRelay1()) + "\n" +
-                                        "Back light: " + stat.get(dataResponse.getRelay2()));
+                                        "Main light: " + relayStatus.get(dataResponse.getRelay1()) + "\n" +
+                                        "Back light: " + status.get(dataResponse.getLight()) + "\n" +
+                                        "Lock" + relayStatus.get(dataResponse.getRelay2()));
                         break;
                 }
             } catch (Exception e){
