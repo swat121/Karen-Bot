@@ -88,11 +88,11 @@ public class BotService extends TelegramLongPollingBot {
                                 "Name: " + dataResponse.getName() + "\n" +
                                         "Main light: " + relayStatus.get(dataResponse.getRelay1()) + "\n" +
                                         "Back light: " + status.get(dataResponse.getLight()) + "\n" +
-                                        "Lock" + relayStatus.get(dataResponse.getRelay2()));
+                                        "Lock: " + relayStatus.get(dataResponse.getRelay2()));
                         break;
                 }
             } catch (Exception e){
-                sendMsg(message, "Karen does not answer");
+                sendMsg(message, "Karen does not answer: " + e.getMessage());
             }
         } else {
             sendMsg(message, "Sorry, but you are not on the user list or command not found\n\n(you can go fuck yourself)");
