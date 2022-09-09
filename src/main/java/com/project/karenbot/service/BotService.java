@@ -81,6 +81,7 @@ public class BotService extends TelegramLongPollingBot {
                         response
                                 = getFromESP(urlConfig.getResource().get("Patric") + "/setting/relay2", String.class);
                         sendMsg(message, relayStatus.get(response));
+                        break;
                     case "Status":
                         dataResponse
                                 = getFromESP(urlConfig.getResource().get("Patric") + "/status", DataResponse.class);
