@@ -74,7 +74,7 @@ public class BotService extends TelegramLongPollingBot {
                         break;
                     case "Back light":
                         response
-                                = getFromESP(urlConfig.getResource().get("Patric") + "/setting/light", String.class);
+                                = getFromESP(urlConfig.getResource().get("Patric") + "/sensor/light", String.class);
                         sendMsg(message, status.get(response));
                         break;
                     case "Open":
