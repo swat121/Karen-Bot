@@ -10,3 +10,10 @@ service:
   chatId:
     250412288: "Denis"
     600017498: "Igor"
+microcontroller:
+  relay:
+    1: "Off"
+    0: "On"
+  light:
+    1: "On"
+    0: "Off"

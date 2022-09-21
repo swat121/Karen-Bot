@@ -1,5 +1,6 @@
 package com.project.karenbot.service;
 
+import com.project.karenbot.config.DataConfig;
 import com.project.karenbot.config.UrlConfig;
 import com.project.karenbot.model.DataResponse;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,7 @@ import java.util.Objects;
 public class BotService extends TelegramLongPollingBot {
     private final UrlConfig urlConfig;
     private final RestTemplate restTemplate;
+    private final DataConfig dataConfig;
     @Override
     public String getBotUsername() {
         return urlConfig.getCredential().get("id");
@@ -55,12 +57,6 @@ public class BotService extends TelegramLongPollingBot {
     }
     @SneakyThrows
     public void vipCommand(Message message){
-        HashMap<String, String> relayStatus = new HashMap<>();
-        relayStatus.put("0", "On");
-        relayStatus.put("1", "Off");
-        HashMap<String, String> status = new HashMap<>();
-        status.put("1", "On");
-        status.put("0", "Off");
         DataResponse dataResponse;
         String response;
         if (urlConfig.getChatId().get(message.getChatId()) != null) {
@@ -70,26 +66,26 @@ public class BotService extends TelegramLongPollingBot {
                     case "Main light":
                         response
                                 = getFromESP(urlConfig.getResource().get("Patric") + "/setting/relay1", String.class);
-                        sendMsg(message, relayStatus.get(response));
+                        sendMsg(message, dataConfig.getRelayS().get(response));
                         break;
                     case "Back light":
                         response
                                 = getFromESP(urlConfig.getResource().get("Patric") + "/sensor/light", String.class);
-                        sendMsg(message, status.get(response));
+                        sendMsg(message, dataConfig.getLightS().get(response));
                         break;
                     case "Open":
                         response
                                 = getFromESP(urlConfig.getResource().get("Patric") + "/setting/relay2", String.class);
-                        sendMsg(message, relayStatus.get(response));
+                        sendMsg(message, dataConfig.getRelayS().get(response));
                         break;
                     case "Status":
                         dataResponse
                                 = getFromESP(urlConfig.getResource().get("Patric") + "/status", DataResponse.class);
                         sendMsg(message,
                                 "Name: " + dataResponse.getName() + "\n" +
-                                        "Main light: " + relayStatus.get(dataResponse.getRelay1()) + "\n" +
-                                        "Back light: " + status.get(dataResponse.getLight()) + "\n" +
-                                        "Lock: " + relayStatus.get(dataResponse.getRelay2()));
+                                        "Main light: " + dataConfig.getRelayS().get(dataResponse.getRelay1()) + "\n" +
+                                        "Back light: " + dataConfig.getLightS().get(dataResponse.getLight()) + "\n" +
+                                        "Lock: " + dataConfig.getRelayS().get(dataResponse.getRelay2()));
                         break;
                 }
             } catch (Exception e){
