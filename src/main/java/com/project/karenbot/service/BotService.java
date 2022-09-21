@@ -1,5 +1,6 @@
 package com.project.karenbot.service;
 
+import com.project.karenbot.config.BotConfig;
 import com.project.karenbot.config.DataConfig;
 import com.project.karenbot.config.UrlConfig;
 import com.project.karenbot.model.DataResponse;
@@ -27,14 +28,15 @@ public class BotService extends TelegramLongPollingBot {
     private final UrlConfig urlConfig;
     private final RestTemplate restTemplate;
     private final DataConfig dataConfig;
+    private final BotConfig botConfig;
     @Override
     public String getBotUsername() {
-        return urlConfig.getCredential().get("id");
+        return botConfig.getId();
     }
 
     @Override
     public String getBotToken() {
-        return urlConfig.getCredential().get("token");
+        return botConfig.getToken();
     }
 
     @SneakyThrows
@@ -59,7 +61,7 @@ public class BotService extends TelegramLongPollingBot {
     public void vipCommand(Message message){
         DataResponse dataResponse;
         String response;
-        if (urlConfig.getChatId().get(message.getChatId()) != null) {
+        if (botConfig.getUsers().get("user1") == message.getChatId().toString() || botConfig.getUsers().get("user2") == message.getChatId().toString()) {
             try {
                 sendMsg(message, "Send: " + "'"+message.getText()+"'");
                 switch (message.getText()) {

@@ -9,6 +9,4 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "service")
 public class UrlConfig {
     private Map<String, String> resource;
-    private Map<String, String> credential;
-    private Map<Long, String> chatId;
 }
