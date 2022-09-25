@@ -1,15 +1,3 @@
-service:
-  resource:
-    Garry:
-    Patric: "http://192.168.0.102:8080/patric"
-  credential:
-    id: "@wikardBot"
-    token: "5279096564:AAFZi7VtekLt6_MrFwA7cd7zuUuj6NOd4lM"
-    idTest: "@test_wikardBot"
-    tokenTest: "5631827691:AAHsgTeMvsmW1HCN54Pqb2O8pyRAMqUF21o"
-  chatId:
-    250412288: "Denis"
-    600017498: "Igor"
 microcontroller:
   relay:
     1: "Off"
