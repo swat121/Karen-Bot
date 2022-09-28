@@ -16,8 +16,11 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 @AllArgsConstructor
@@ -60,7 +63,7 @@ public class BotService extends TelegramLongPollingBot {
     public void vipCommand(Message message) {
         DataResponse dataResponse;
         String response;
-        if (botConfig.getUsers().get("user1") == message.getChatId().toString() || botConfig.getUsers().get("user2") == message.getChatId().toString()) {
+        if (checkUser(message) != null) {
             try {
                 sendMsg(message, "Send: " + "'" + message.getText() + "'");
                 switch (message.getText()) {
@@ -141,5 +144,9 @@ public class BotService extends TelegramLongPollingBot {
 
     private <T> T getFromESP(String url, Class<T> responseType) {
         return restTemplate.getForEntity(url, responseType).getBody();
+    }
+    private String checkUser(Message message){
+        List<String> listOfUsers = Arrays.asList(botConfig.getUsers().split(","));
+        return listOfUsers.stream().filter(element -> (element.equals(message.getChatId().toString()))).findFirst().orElse(null);
     }
 }
