@@ -3,6 +3,7 @@ package com.project.karenbot.service;
 import com.project.karenbot.config.BotConfig;
 import com.project.karenbot.config.DataConfig;
 import com.project.karenbot.config.UrlConfig;
+import com.project.karenbot.handler.AbstractMessageHandler;
 import com.project.karenbot.model.DataResponse;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -12,23 +13,24 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import javax.annotation.PreDestroy;
+import java.util.*;
 
 @Component
 @AllArgsConstructor
 public class BotService extends TelegramLongPollingBot {
+
     private final UrlConfig urlConfig;
     private final RestTemplate restTemplate;
     private final DataConfig dataConfig;
     private final BotConfig botConfig;
+    private final List<AbstractMessageHandler> messageHandlers;
+
+    @PreDestroy
+    public void shutdown() {
+        System.out.println("stopstopstopstopstop");
+    }
 
     @Override
     public String getBotUsername() {
@@ -40,21 +42,23 @@ public class BotService extends TelegramLongPollingBot {
         return botConfig.getToken();
     }
 
-    @SneakyThrows
     @Override
+    public void onRegister() {
+        System.out.println("rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
+    }
+
+    @Override
+    @SneakyThrows
     public void onUpdateReceived(Update update) {
         Message message = update.getMessage();
         if (message != null && message.hasText()) {
-            switch (message.getText()) {
-                case "/start":
-                    sendMsgForButton(message, new String[]{"Main light", "Back light"}, new String[]{"Open", "Status"});
-                    break;
-                case "/id":
-                    sendMsg(message, message.getChatId().toString());
-                    break;
-                default:
-                    vipCommand(message);
-                    break;
+            Optional<AbstractMessageHandler> handler = messageHandlers.stream()
+                    .filter(it -> it.canHandler(update))
+                    .findFirst();
+            if (handler.isPresent()) {
+                execute(handler.get().handlMessage(update));
+            } else {
+                sendMsg(message, "The command is not exist");
             }
         }
     }
@@ -109,43 +113,11 @@ public class BotService extends TelegramLongPollingBot {
                 .build());
     }
 
-    @SneakyThrows
-    public void sendMsgForButton(Message message, String[] nameFirstButtons, String[] nameSecondButtons) {
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.enableMarkdown(true);
-        sendMessage.setChatId(message.getChatId().toString());
-        sendMessage.setReplyToMessageId(message.getMessageId());
-        sendMessage.setText("You have some buttons for control home (Patric)");
-        setButton(sendMessage, nameFirstButtons, nameSecondButtons);
-        execute(sendMessage);
-    }
-
-    public void setButton(SendMessage sendMessage, String[] nameFirstButtons, String[] nameSecondButtons) {
-        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
-        sendMessage.setReplyMarkup(replyKeyboardMarkup);
-        replyKeyboardMarkup.setSelective(true);
-        replyKeyboardMarkup.setResizeKeyboard(true);
-        replyKeyboardMarkup.setOneTimeKeyboard(false);
-
-        List<KeyboardRow> keyboardRowList = new ArrayList<>();
-        KeyboardRow keyboardRowFirst = new KeyboardRow();
-        KeyboardRow keyboardRowSecond = new KeyboardRow();
-
-        for (int i = 0; i < nameFirstButtons.length; i++) {
-            keyboardRowFirst.add(new KeyboardButton(nameFirstButtons[i]));
-        }
-        for (int i = 0; i < nameSecondButtons.length; i++) {
-            keyboardRowSecond.add(new KeyboardButton(nameSecondButtons[i]));
-        }
-        keyboardRowList.add(keyboardRowFirst);
-        keyboardRowList.add(keyboardRowSecond);
-        replyKeyboardMarkup.setKeyboard(keyboardRowList);
-    }
-
     private <T> T getFromESP(String url, Class<T> responseType) {
         return restTemplate.getForEntity(url, responseType).getBody();
     }
-    private String checkUser(Message message){
+
+    private String checkUser(Message message) {
         List<String> listOfUsers = Arrays.asList(botConfig.getUsers().split(","));
         return listOfUsers.stream().filter(element -> (element.equals(message.getChatId().toString()))).findFirst().orElse(null);
     }
