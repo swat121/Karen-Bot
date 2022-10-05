@@ -31,9 +31,9 @@ public class StatusCommandHandler extends AbstractMessageHandler {
         dataResponse = connectionService.getDataResponse("Patric", "/status");
         sendMessage.setText(
                 "Name: " + dataResponse.getName() + "\n" +
-                "Main light: " + dataConfig.getRelayS().get(dataResponse.getRelay1()) + "\n" +
-                "Back light: " + dataConfig.getLightS().get(dataResponse.getLight()) + "\n" +
-                "Lock: " + dataConfig.getRelayS().get(dataResponse.getRelay2()));
+                        "Main light: " + dataConfig.getRelayS().get(dataResponse.getRelay1()) + "\n" +
+                        "Back light: " + dataConfig.getLightS().get(dataResponse.getLight()) + "\n" +
+                        "Lock: " + dataConfig.getRelayS().get(dataResponse.getRelay2()));
         return sendMessage;
     }
 }

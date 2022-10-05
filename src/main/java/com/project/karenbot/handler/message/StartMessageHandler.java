@@ -22,6 +22,6 @@ public class StartMessageHandler extends AbstractMessageHandler {
 
     @Override
     public SendMessage handleMessage(Update update) {
-        return buttonService.sendMsgForButton(update.getMessage(),new String[]{"Main light", "Back light"}, new String[]{"Open", "Status"});
+        return buttonService.sendMsgForButton(update.getMessage(), new String[]{"Main light", "Back light"}, new String[]{"Open", "Status"});
     }
 }

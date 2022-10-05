@@ -1,21 +1,19 @@
 package com.project.karenbot.service;
 
 import com.project.karenbot.config.BotConfig;
-import com.project.karenbot.config.DataConfig;
-import com.project.karenbot.config.UrlConfig;
 import com.project.karenbot.handler.AbstractMessageHandler;
-import com.project.karenbot.model.DataResponse;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import javax.annotation.PreDestroy;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 @Component
 @AllArgsConstructor
@@ -26,7 +24,7 @@ public class BotService extends TelegramLongPollingBot {
 
     @PreDestroy
     public void shutdown() {
-       sendMsg("Bot stopped");
+        sendMsg("Bot stopped");
     }
 
     @Override
@@ -59,7 +57,7 @@ public class BotService extends TelegramLongPollingBot {
                     sendMsg(message, "The command is not exist or you are not in the user list");
                 }
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             sendMsg(message, e.getMessage());
         }
     }
@@ -72,6 +70,7 @@ public class BotService extends TelegramLongPollingBot {
                 .text(text)
                 .build());
     }
+
     @SneakyThrows
     public void sendMsg(String text) {
         execute(SendMessage
@@ -83,7 +82,7 @@ public class BotService extends TelegramLongPollingBot {
 
     private boolean checkUser(Message message) {
         List<String> listOfUsers = Arrays.asList(botConfig.getUsers().split(","));
-        if (listOfUsers.stream().filter(element -> (element.equals(message.getChatId().toString()))).findFirst().orElse(null) != null){
+        if (listOfUsers.stream().filter(element -> (element.equals(message.getChatId().toString()))).findFirst().orElse(null) != null) {
             return true;
         } else return false;
     }

@@ -23,6 +23,7 @@ public class ButtonService {
         setButton(sendMessage, nameFirstButtons, nameSecondButtons);
         return sendMessage;
     }
+
     public void setButton(SendMessage sendMessage, String[] nameFirstButtons, String[] nameSecondButtons) {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         sendMessage.setReplyMarkup(replyKeyboardMarkup);

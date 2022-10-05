@@ -13,11 +13,11 @@ public class ConnectionService {
     private final RestTemplate restTemplate;
     private final UrlConfig urlConfig;
 
-    public String getResponse(String name, String url){
+    public String getResponse(String name, String url) {
         return getFromESP(urlConfig.getResource().get(name) + url, String.class);
     }
 
-    public DataResponse getDataResponse(String name, String url){
+    public DataResponse getDataResponse(String name, String url) {
         return getFromESP(urlConfig.getResource().get(name) + url, DataResponse.class);
     }
 
