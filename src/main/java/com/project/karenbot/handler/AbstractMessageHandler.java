@@ -7,7 +7,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @AllArgsConstructor
 public abstract class AbstractMessageHandler {
 
-    abstract public boolean canHandler(Update update);
+    abstract public boolean canHandle(Update update, boolean user);
 
-    abstract public SendMessage handlMessage(Update update);
+    abstract public SendMessage handleMessage(Update update);
 }

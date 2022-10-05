@@ -15,13 +15,13 @@ public class StartMessageHandler extends AbstractMessageHandler {
     private final ButtonService buttonService;
 
     @Override
-    public boolean canHandler(Update update) {
+    public boolean canHandle(Update update, boolean user) {
         return update.hasMessage()
                 && "/start".equals(update.getMessage().getText());
     }
 
     @Override
-    public SendMessage handlMessage(Update update) {
+    public SendMessage handleMessage(Update update) {
         return buttonService.sendMsgForButton(update.getMessage(),new String[]{"Main light", "Back light"}, new String[]{"Open", "Status"});
     }
 }

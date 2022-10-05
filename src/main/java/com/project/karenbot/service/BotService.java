@@ -21,9 +21,6 @@ import java.util.*;
 @AllArgsConstructor
 public class BotService extends TelegramLongPollingBot {
 
-    private final UrlConfig urlConfig;
-    private final RestTemplate restTemplate;
-    private final DataConfig dataConfig;
     private final BotConfig botConfig;
     private final List<AbstractMessageHandler> messageHandlers;
 
@@ -53,54 +50,13 @@ public class BotService extends TelegramLongPollingBot {
         Message message = update.getMessage();
         if (message != null && message.hasText()) {
             Optional<AbstractMessageHandler> handler = messageHandlers.stream()
-                    .filter(it -> it.canHandler(update))
+                    .filter(it -> it.canHandle(update,checkUser(message)))
                     .findFirst();
             if (handler.isPresent()) {
-                execute(handler.get().handlMessage(update));
+                execute(handler.get().handleMessage(update));
             } else {
-                sendMsg(message, "The command is not exist");
+                sendMsg(message, "The command is not exist or you are not in the user list");
             }
-        }
-    }
-
-    @SneakyThrows
-    public void vipCommand(Message message) {
-        DataResponse dataResponse;
-        String response;
-        if (checkUser(message) != null) {
-            try {
-                sendMsg(message, "Send: " + "'" + message.getText() + "'");
-                switch (message.getText()) {
-                    case "Main light":
-                        response
-                                = getFromESP(urlConfig.getResource().get("Patric") + "/setting/relay1", String.class);
-                        sendMsg(message, dataConfig.getRelayS().get(response));
-                        break;
-                    case "Back light":
-                        response
-                                = getFromESP(urlConfig.getResource().get("Patric") + "/sensor/light", String.class);
-                        sendMsg(message, dataConfig.getLightS().get(response));
-                        break;
-                    case "Open":
-                        response
-                                = getFromESP(urlConfig.getResource().get("Patric") + "/setting/relay2", String.class);
-                        sendMsg(message, dataConfig.getRelayS().get(response));
-                        break;
-                    case "Status":
-                        dataResponse
-                                = getFromESP(urlConfig.getResource().get("Patric") + "/status", DataResponse.class);
-                        sendMsg(message,
-                                "Name: " + dataResponse.getName() + "\n" +
-                                        "Main light: " + dataConfig.getRelayS().get(dataResponse.getRelay1()) + "\n" +
-                                        "Back light: " + dataConfig.getLightS().get(dataResponse.getLight()) + "\n" +
-                                        "Lock: " + dataConfig.getRelayS().get(dataResponse.getRelay2()));
-                        break;
-                }
-            } catch (Exception e) {
-                sendMsg(message, "Karen does not answer: " + e.getMessage());
-            }
-        } else {
-            sendMsg(message, "Sorry, but you are not on the user list or command not found\n\n(you can go fuck yourself)");
         }
     }
 
@@ -113,12 +69,10 @@ public class BotService extends TelegramLongPollingBot {
                 .build());
     }
 
-    private <T> T getFromESP(String url, Class<T> responseType) {
-        return restTemplate.getForEntity(url, responseType).getBody();
-    }
-
-    private String checkUser(Message message) {
+    private boolean checkUser(Message message) {
         List<String> listOfUsers = Arrays.asList(botConfig.getUsers().split(","));
-        return listOfUsers.stream().filter(element -> (element.equals(message.getChatId().toString()))).findFirst().orElse(null);
+        if (listOfUsers.stream().filter(element -> (element.equals(message.getChatId().toString()))).findFirst().orElse(null) != null){
+            return true;
+        } else return false;
     }
 }
