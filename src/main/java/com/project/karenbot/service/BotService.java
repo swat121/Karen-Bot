@@ -26,7 +26,7 @@ public class BotService extends TelegramLongPollingBot {
 
     @PreDestroy
     public void shutdown() {
-        System.out.println("stopstopstopstopstop");
+       sendMsg("Bot stopped");
     }
 
     @Override
@@ -41,7 +41,7 @@ public class BotService extends TelegramLongPollingBot {
 
     @Override
     public void onRegister() {
-        System.out.println("rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
+        sendMsg("Bot rebooted");
     }
 
     @Override
@@ -69,6 +69,14 @@ public class BotService extends TelegramLongPollingBot {
         execute(SendMessage
                 .builder()
                 .chatId(message.getChatId().toString())
+                .text(text)
+                .build());
+    }
+    @SneakyThrows
+    public void sendMsg(String text) {
+        execute(SendMessage
+                .builder()
+                .chatId(botConfig.getUsers().split(",")[0])
                 .text(text)
                 .build());
     }
