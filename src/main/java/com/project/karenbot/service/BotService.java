@@ -48,15 +48,19 @@ public class BotService extends TelegramLongPollingBot {
     @SneakyThrows
     public void onUpdateReceived(Update update) {
         Message message = update.getMessage();
-        if (message != null && message.hasText()) {
-            Optional<AbstractMessageHandler> handler = messageHandlers.stream()
-                    .filter(it -> it.canHandle(update,checkUser(message)))
-                    .findFirst();
-            if (handler.isPresent()) {
-                execute(handler.get().handleMessage(update));
-            } else {
-                sendMsg(message, "The command is not exist or you are not in the user list");
+        try {
+            if (message != null && message.hasText()) {
+                Optional<AbstractMessageHandler> handler = messageHandlers.stream()
+                        .filter(it -> it.canHandle(update, checkUser(message)))
+                        .findFirst();
+                if (handler.isPresent()) {
+                    execute(handler.get().handleMessage(update));
+                } else {
+                    sendMsg(message, "The command is not exist or you are not in the user list");
+                }
             }
+        } catch (Exception e){
+            sendMsg(message, e.getMessage());
         }
     }
 
