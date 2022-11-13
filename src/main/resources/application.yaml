@@ -1,7 +1,3 @@
-service:
-  resource:
-    Karen: "http://192.168.0.102:8080"
-    Patric: "http://192.168.0.102:8080/patric"
 microcontroller:
   relayS:
     1: "Off"
@@ -9,3 +5,12 @@ microcontroller:
   lightS:
     1: "On"
     0: "Off"
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_HOST:http://localhost:8086/eureka/}
+  instance:
+    instance-id: karenbot-instance
+spring:
+  application:
+    name: karenbot

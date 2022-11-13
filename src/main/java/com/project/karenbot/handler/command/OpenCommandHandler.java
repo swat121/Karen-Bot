@@ -26,7 +26,7 @@ public class OpenCommandHandler extends AbstractMessageHandler {
     public SendMessage handleMessage(Update update) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(update.getMessage().getChatId().toString());
-        sendMessage.setText(dataConfig.getRelayS().get(connectionService.getResponse("Patric", "/setting/relay2")));
+        sendMessage.setText(dataConfig.getRelayS().get(connectionService.getResponse("karen", "/patric/setting/relay2")));
         return sendMessage;
     }
 }

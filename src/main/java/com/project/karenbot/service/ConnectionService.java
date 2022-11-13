@@ -1,24 +1,24 @@
 package com.project.karenbot.service;
 
-import com.project.karenbot.config.UrlConfig;
 import com.project.karenbot.model.DataResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
+import java.net.URI;
 @Service
 @AllArgsConstructor
 public class ConnectionService {
 
     private final RestTemplate restTemplate;
-    private final UrlConfig urlConfig;
 
     public String getResponse(String name, String url) {
-        return getFromESP(urlConfig.getResource().get(name) + url, String.class);
+        URI karenUrl = URI.create("http://" + name).resolve(url);
+        return getFromESP(karenUrl.toString(), String.class);
     }
 
     public DataResponse getDataResponse(String name, String url) {
-        return getFromESP(urlConfig.getResource().get(name) + url, DataResponse.class);
+        URI karenUrl = URI.create("http://" + name).resolve(url);
+        return getFromESP(karenUrl.toString(), DataResponse.class);
     }
 
     private <T> T getFromESP(String url, Class<T> responseType) {

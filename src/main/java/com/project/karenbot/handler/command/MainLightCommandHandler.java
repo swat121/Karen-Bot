@@ -26,7 +26,7 @@ public class MainLightCommandHandler extends AbstractMessageHandler {
     public SendMessage handleMessage(Update update) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(update.getMessage().getChatId().toString());
-        sendMessage.setText(dataConfig.getRelayS().get(connectionService.getResponse("Patric", "/setting/relay1")));
+        sendMessage.setText(dataConfig.getRelayS().get(connectionService.getResponse("karen", "/patric/setting/relay1")));
         return sendMessage;
     }
 }
