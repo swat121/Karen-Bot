@@ -1,5 +1,6 @@
 service:
   resource:
+    Karen: "http://192.168.0.102:8080"
     Patric: "http://192.168.0.102:8080/patric"
 microcontroller:
   relayS:
