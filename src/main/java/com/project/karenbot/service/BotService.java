@@ -81,9 +81,7 @@ public class BotService extends TelegramLongPollingBot {
     }
 
     private boolean checkUser(Message message) {
-        List<String> listOfUsers = Arrays.asList(botConfig.getUsers().split(","));
-        if (listOfUsers.stream().filter(element -> (element.equals(message.getChatId().toString()))).findFirst().orElse(null) != null) {
-            return true;
-        } else return false;
+        String chatId = message.getChatId().toString();
+        return Arrays.asList(botConfig.getUsers().split(",")).contains(chatId);
     }
 }
