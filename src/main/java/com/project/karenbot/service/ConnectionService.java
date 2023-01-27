@@ -12,12 +12,12 @@ public class ConnectionService {
     private final RestTemplate restTemplate;
 
     public String getResponse(String name, String url) {
-        URI karenUrl = URI.create("http://" + name).resolve(url);
+        URI karenUrl = URI.create("https://" + name).resolve(url);
         return getFromESP(karenUrl.toString(), String.class);
     }
 
     public DataResponse getDataResponse(String name, String url) {
-        URI karenUrl = URI.create("http://" + name).resolve(url);
+        URI karenUrl = URI.create("https://" + name).resolve(url);
         return getFromESP(karenUrl.toString(), DataResponse.class);
     }
 
