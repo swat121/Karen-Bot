@@ -27,7 +27,7 @@ public class BackLightCommandHandler extends AbstractMessageHandler {
     public SendMessage handleMessage(Update update) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(update.getMessage().getChatId().toString());
-        sendMessage.setText(dataConfig.getLightS().get(connectionService.getResponse("karen", "/patric/sensor/light")));
+        sendMessage.setText(dataConfig.getLightS().get(connectionService.getResponseFromService("karen", "/patric/sensor/light", String.class)));
         return sendMessage;
     }
 }
