@@ -24,4 +24,8 @@ public class ConnectionService {
     private <T> T getFromESP(String url, Class<T> responseType) {
         return restTemplate.getForEntity(url, responseType).getBody();
     }
+
+    public <T> T getResponseFromService(String name, String url, Class<T> responseType) {
+        return restTemplate.getForEntity(URI.create("https://" + name).resolve(url).toString(), responseType).getBody();
+    }
 }
