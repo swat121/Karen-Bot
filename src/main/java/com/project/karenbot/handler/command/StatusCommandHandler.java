@@ -28,7 +28,7 @@ public class StatusCommandHandler extends AbstractMessageHandler {
         DataResponse dataResponse;
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(update.getMessage().getChatId().toString());
-        dataResponse = connectionService.getDataResponse("karen", "/patric/status");
+        dataResponse = connectionService.getResponseFromService("karen", "/patric/status", DataResponse.class);
         sendMessage.setText(
                 "Name: " + dataResponse.getName() + "\n" +
                         "Main light: " + dataConfig.getRelayS().get(dataResponse.getRelay1()) + "\n" +

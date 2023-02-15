@@ -11,17 +11,7 @@ public class ConnectionService {
 
     private final RestTemplate restTemplate;
 
-    public String getResponse(String name, String url) {
-        URI karenUrl = URI.create("https://" + name).resolve(url);
-        return getFromESP(karenUrl.toString(), String.class);
-    }
-
-    public DataResponse getDataResponse(String name, String url) {
-        URI karenUrl = URI.create("https://" + name).resolve(url);
-        return getFromESP(karenUrl.toString(), DataResponse.class);
-    }
-
-    private <T> T getFromESP(String url, Class<T> responseType) {
-        return restTemplate.getForEntity(url, responseType).getBody();
+    public <T> T getResponseFromService(String name, String url, Class<T> responseType) {
+        return restTemplate.getForEntity(URI.create("https://" + name).resolve(url).toString(), responseType).getBody();
     }
 }
