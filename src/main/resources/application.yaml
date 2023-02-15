@@ -1,7 +1,7 @@
 microcontroller:
   relayS:
-    1: "Off"
-    0: "On"
+    1: "On"
+    0: "Off"
   lightS:
     1: "On"
     0: "Off"
