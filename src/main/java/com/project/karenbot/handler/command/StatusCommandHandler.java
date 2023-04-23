@@ -29,11 +29,13 @@ public class StatusCommandHandler extends AbstractMessageHandler {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(update.getMessage().getChatId().toString());
         dataResponse = connectionService.getResponseFromService("karen", "/patric/status", DataResponse.class);
+        String temp = connectionService.getResponseFromService("karen", "/patric/sensor/temperature", String.class);
         sendMessage.setText(
                 "Name: " + dataResponse.getName() + "\n" +
                         "Main light: " + dataConfig.getRelayS().get(dataResponse.getRelay1()) + "\n" +
                         "Back light: " + dataConfig.getLightS().get(dataResponse.getLight()) + "\n" +
-                        "Lock: " + dataConfig.getRelayS().get(dataResponse.getRelay2()));
+                        "Lock: " + dataConfig.getRelayS().get(dataResponse.getRelay2()) + "\n" +
+                        "Temperature: " + temp);
         return sendMessage;
     }
 }

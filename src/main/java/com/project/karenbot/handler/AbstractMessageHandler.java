@@ -9,5 +9,5 @@ public abstract class AbstractMessageHandler {
 
     abstract public boolean canHandle(Update update, boolean user);
 
-    abstract public SendMessage handleMessage(Update update);
+    abstract public <T> T handleMessage(Update update);
 }

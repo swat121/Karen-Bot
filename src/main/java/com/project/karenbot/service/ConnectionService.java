@@ -14,4 +14,8 @@ public class ConnectionService {
     public <T> T getResponseFromService(String name, String url, Class<T> responseType) {
         return restTemplate.getForEntity(URI.create("https://" + name).resolve(url).toString(), responseType).getBody();
     }
+
+    public <T> T getObjectFromService(String name, String url, Class<T> responseType) {
+        return restTemplate.getForObject(URI.create("https://" + name).resolve(url).toString(), responseType);
+    }
 }
