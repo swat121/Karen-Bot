@@ -6,8 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.*;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -53,7 +52,13 @@ public class BotService extends TelegramLongPollingBot {
                         .filter(it -> it.canHandle(update, checkUser(message)))
                         .findFirst();
                 if (handler.isPresent()) {
-                    execute(handler.get().handleMessage(update));
+                    switch (handler.get().handleMessage(update).getClass().getSimpleName()) {
+                        case "SendMessage" -> execute(handler.get().<SendMessage>handleMessage(update));
+                        case "SendDocument" -> execute(handler.get().<SendDocument>handleMessage(update));
+                        case "SendPhoto" -> execute(handler.get().<SendPhoto>handleMessage(update));
+                        case "SendVideo" -> execute(handler.get().<SendVideo>handleMessage(update));
+                        case "SendSticker" -> execute(handler.get().<SendSticker>handleMessage(update));
+                    }
                 } else {
                     sendMsg(message, "The command is not exist or you are not in the user list");
                 }

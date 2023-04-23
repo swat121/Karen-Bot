@@ -34,7 +34,7 @@ public class ExcelMessageHandler extends AbstractMessageHandler {
         SendDocument request = new SendDocument();
         request.setChatId(update.getMessage().getChatId().toString());
         request.setDocument(new InputFile(file));
-        request.setCaption("Here's the Excel file you requested!");
+        request.setCaption("This is the Excel file with Temperature");
         return request;
     }
 
@@ -50,7 +50,6 @@ public class ExcelMessageHandler extends AbstractMessageHandler {
             row.createCell(0).setCellValue(String.valueOf(temperature.getDate()));
             row.createCell(1).setCellValue(String.valueOf(temperature.getTime()));
             row.createCell(2).setCellValue(temperature.getDegreesCelsius());
-            // Add more columns as needed
         }
 
         File tempFile = File.createTempFile("data", ".xlsx");
