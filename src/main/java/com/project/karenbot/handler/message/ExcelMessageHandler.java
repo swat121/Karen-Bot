@@ -2,6 +2,7 @@ package com.project.karenbot.handler.message;
 
 import com.project.karenbot.dto.Temperature;
 import com.project.karenbot.handler.AbstractMessageHandler;
+import com.project.karenbot.handler.Types;
 import com.project.karenbot.service.ConnectionService;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -59,5 +60,10 @@ public class ExcelMessageHandler extends AbstractMessageHandler {
         fileOutputStream.close();
 
         return tempFile;
+    }
+
+    @Override
+    public Types getTypeOfMethod() {
+        return Types.SendDocument;
     }
 }

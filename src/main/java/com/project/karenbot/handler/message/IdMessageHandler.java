@@ -1,6 +1,7 @@
 package com.project.karenbot.handler.message;
 
 import com.project.karenbot.handler.AbstractMessageHandler;
+import com.project.karenbot.handler.Types;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -20,5 +21,10 @@ public class IdMessageHandler extends AbstractMessageHandler {
         sendMessage.setChatId(update.getMessage().getChatId().toString());
         sendMessage.setText(update.getMessage().getChatId().toString());
         return sendMessage;
+    }
+
+    @Override
+    public Types getTypeOfMethod() {
+        return Types.SendMessage;
     }
 }

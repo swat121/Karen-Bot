@@ -2,6 +2,7 @@ package com.project.karenbot.handler.command;
 
 import com.project.karenbot.config.DataConfig;
 import com.project.karenbot.handler.AbstractMessageHandler;
+import com.project.karenbot.handler.Types;
 import com.project.karenbot.model.DataResponse;
 import com.project.karenbot.service.ConnectionService;
 import lombok.AllArgsConstructor;
@@ -37,5 +38,10 @@ public class StatusCommandHandler extends AbstractMessageHandler {
                         "Lock: " + dataConfig.getRelayS().get(dataResponse.getRelay2()) + "\n" +
                         "Temperature: " + temp);
         return sendMessage;
+    }
+
+    @Override
+    public Types getTypeOfMethod() {
+        return Types.SendMessage;
     }
 }

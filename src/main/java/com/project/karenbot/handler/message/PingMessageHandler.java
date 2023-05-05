@@ -1,6 +1,7 @@
 package com.project.karenbot.handler.message;
 
 import com.project.karenbot.handler.AbstractMessageHandler;
+import com.project.karenbot.handler.Types;
 import com.project.karenbot.service.ConnectionService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -25,5 +26,10 @@ public class PingMessageHandler extends AbstractMessageHandler {
         sendMessage.setChatId(update.getMessage().getChatId().toString());
         sendMessage.setText(connectionService.getResponseFromService("karen","/ping", String.class));
         return sendMessage;
+    }
+
+    @Override
+    public Types getTypeOfMethod() {
+        return Types.SendMessage;
     }
 }

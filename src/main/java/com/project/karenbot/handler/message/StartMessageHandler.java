@@ -2,6 +2,7 @@ package com.project.karenbot.handler.message;
 
 
 import com.project.karenbot.handler.AbstractMessageHandler;
+import com.project.karenbot.handler.Types;
 import com.project.karenbot.service.ButtonService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -23,5 +24,10 @@ public class StartMessageHandler extends AbstractMessageHandler {
     @Override
     public SendMessage handleMessage(Update update) {
         return buttonService.sendMsgForButton(update.getMessage(), new String[]{"Main Light", "Back Light"}, new String[]{"Open", "Status"});
+    }
+
+    @Override
+    public Types getTypeOfMethod() {
+        return Types.SendMessage;
     }
 }

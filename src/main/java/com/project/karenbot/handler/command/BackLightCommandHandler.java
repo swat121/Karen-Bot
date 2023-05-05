@@ -2,6 +2,7 @@ package com.project.karenbot.handler.command;
 
 import com.project.karenbot.config.DataConfig;
 import com.project.karenbot.handler.AbstractMessageHandler;
+import com.project.karenbot.handler.Types;
 import com.project.karenbot.service.ConnectionService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -29,5 +30,10 @@ public class BackLightCommandHandler extends AbstractMessageHandler {
         sendMessage.setChatId(update.getMessage().getChatId().toString());
         sendMessage.setText(dataConfig.getLightS().get(connectionService.getResponseFromService("karen", "/patric/sensor/light", String.class)));
         return sendMessage;
+    }
+
+    @Override
+    public Types getTypeOfMethod() {
+        return Types.SendMessage;
     }
 }

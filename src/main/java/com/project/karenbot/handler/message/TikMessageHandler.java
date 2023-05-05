@@ -1,6 +1,7 @@
 package com.project.karenbot.handler.message;
 
 import com.project.karenbot.handler.AbstractMessageHandler;
+import com.project.karenbot.handler.Types;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -22,5 +23,10 @@ public class TikMessageHandler extends AbstractMessageHandler {
         sendMessage.setChatId(update.getMessage().getChatId().toString());
         sendMessage.setText("tok");
         return sendMessage;
+    }
+
+    @Override
+    public Types getTypeOfMethod() {
+        return Types.SendMessage;
     }
 }
