@@ -15,6 +15,10 @@ public class ConnectionService {
         return restTemplate.getForEntity(URI.create("https://" + name).resolve(url).toString(), responseType).getBody();
     }
 
+    public void delete(String name, String url) {
+        restTemplate.delete(URI.create("https://" + name).resolve(url).toString());
+    }
+
     public <T> T getObjectFromService(String name, String url, Class<T> responseType) {
         return restTemplate.getForObject(URI.create("https://" + name).resolve(url).toString(), responseType);
     }
