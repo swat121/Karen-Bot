@@ -2,7 +2,7 @@ package com.project.karenbot.handler.message;
 
 import com.project.karenbot.dto.Temperature;
 import com.project.karenbot.handler.AbstractMessageHandler;
-import com.project.karenbot.handler.Types;
+import com.project.karenbot.enums.Types;
 import com.project.karenbot.service.ConnectionService;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -17,6 +17,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.io.File;
 import java.io.FileOutputStream;
 
+import static com.project.karenbot.enums.Messages.EXCEL;
+import static com.project.karenbot.enums.Services.KAREN_DATA;
+
 @Component
 @AllArgsConstructor
 public class ExcelMessageHandler extends AbstractMessageHandler {
@@ -25,7 +28,7 @@ public class ExcelMessageHandler extends AbstractMessageHandler {
     @Override
     public boolean canHandle(Update update, boolean user) {
         return update.hasMessage()
-                && "/excel".equals(update.getMessage().getText())
+                && EXCEL.getMessage().equals(update.getMessage().getText())
                 && user;
     }
 
@@ -41,7 +44,7 @@ public class ExcelMessageHandler extends AbstractMessageHandler {
 
     @SneakyThrows
     private File getExcelFile() {
-        Temperature[] temperatures = connectionService.getObjectFromService("karen-data", "/api/temps", Temperature[].class);
+        Temperature[] temperatures = connectionService.getObjectFromService(KAREN_DATA.getName(), "/api/temps", Temperature[].class);
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("Data");
 

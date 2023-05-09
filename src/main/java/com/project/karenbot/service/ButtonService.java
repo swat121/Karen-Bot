@@ -19,7 +19,7 @@ public class ButtonService {
         sendMessage.enableMarkdown(true);
         sendMessage.setChatId(message.getChatId().toString());
         sendMessage.setReplyToMessageId(message.getMessageId());
-        sendMessage.setText("You have some buttons for control home (Patric)");
+        sendMessage.setText("You have some buttons for control home");
         setButton(sendMessage, nameFirstButtons, nameSecondButtons);
         return sendMessage;
     }

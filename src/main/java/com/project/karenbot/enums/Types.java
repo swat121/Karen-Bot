@@ -1,4 +1,4 @@
-package com.project.karenbot.handler;
+package com.project.karenbot.enums;
 
 public enum Types {
     SendMessage,
