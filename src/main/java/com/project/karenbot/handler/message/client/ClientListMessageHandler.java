@@ -23,7 +23,8 @@ public class ClientListMessageHandler extends AbstractMessageHandler {
     @Override
     public boolean canHandle(Update update, boolean user) {
         return update.hasMessage()
-                && CLIENTS.getMessage().equals(update.getMessage().getText());
+                && CLIENTS.getMessage().equals(update.getMessage().getText())
+                && user;
     }
 
     @Override

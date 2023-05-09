@@ -20,7 +20,8 @@ public class DeleteListMessageHandler extends AbstractMessageHandler {
     @Override
     public boolean canHandle(Update update, boolean user) {
         return update.hasMessage()
-                && DELETE.getMessage().equals(update.getMessage().getText());
+                && DELETE.getMessage().equals(update.getMessage().getText())
+                && user;
     }
 
     @Override
