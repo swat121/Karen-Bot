@@ -1,5 +1,6 @@
 package com.project.karenbot.service;
 
+import com.project.karenbot.enums.Messages;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -9,7 +10,9 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ButtonService {
@@ -19,7 +22,10 @@ public class ButtonService {
         sendMessage.enableMarkdown(true);
         sendMessage.setChatId(message.getChatId().toString());
         sendMessage.setReplyToMessageId(message.getMessageId());
-        sendMessage.setText("You have some buttons for control home");
+        sendMessage.setText("You have some buttons for control home and command messages: \n" +
+                Arrays.stream(Messages.values())
+                .map(Messages::getMessage)
+                .toList());
         setButton(sendMessage, nameFirstButtons, nameSecondButtons);
         return sendMessage;
     }
