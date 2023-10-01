@@ -13,23 +13,24 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@AllArgsConstructor
 public class BoardConfigService {
     private final ConnectionService connectionService;
-    private static final String KAREN_DATA = Services.KAREN_DATA.getTitle();
-    private static final String API_V1_BOARDS = "/api/v1/boards";
 
-    private static List<BoardConfig> boardConfigList;
+    private final String KAREN_DATA = Services.KAREN_DATA.getTitle();
+    private final String API_V1_BOARDS = "/api/v1/boards";
 
-    public BoardConfigService(ConnectionService connectionService) {
-        this.connectionService = connectionService;
-        boardConfigList = Arrays.asList(this.connectionService.getResponseFromService(KAREN_DATA, API_V1_BOARDS, BoardConfig[].class));
+    private List<BoardConfig> boardConfigList;
+
+    public void uploadData() {
+        boardConfigList = Arrays.asList(connectionService.getResponseFromService(KAREN_DATA, API_V1_BOARDS, BoardConfig[].class));
     }
 
-    public static List<String> parseBoardsNames() {
+    public List<String> parseBoardsNames() {
         return boardConfigList.stream().map(BoardConfig::getName).toList();
     }
 
-    public static List<Device > getSettingByName(String boardName, String setting) {
+    public List<Device > getSettingByName(String boardName, String setting) {
         return boardConfigList.stream()
                 .filter(el -> el.getName().equalsIgnoreCase(boardName))
                 .map(BoardConfig::getSetting)

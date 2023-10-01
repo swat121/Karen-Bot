@@ -17,11 +17,12 @@ import static com.project.karenbot.enums.Tags.SETTING_TAG;
 @AllArgsConstructor
 public class BoardNameButtonHandler extends AbstractMessageHandler {
     private final ButtonService buttonService;
+    private final BoardConfigService boardConfigService;
 
     @Override
     public boolean canHandle(Update update, boolean user) {
         return update.hasMessage()
-                && BoardConfigService.parseBoardsNames().contains(update.getMessage().getText())
+                && boardConfigService.parseBoardsNames().contains(update.getMessage().getText())
                 && user;
     }
 

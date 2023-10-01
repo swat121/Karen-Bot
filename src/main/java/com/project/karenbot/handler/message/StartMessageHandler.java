@@ -17,6 +17,7 @@ import static com.project.karenbot.enums.Messages.START;
 public class StartMessageHandler extends AbstractMessageHandler {
 
     private final ButtonService buttonService;
+    private final BoardConfigService boardConfigService;
 
     @Override
     public boolean canHandle(Update update, boolean user) {
@@ -26,7 +27,8 @@ public class StartMessageHandler extends AbstractMessageHandler {
 
     @Override
     public SendMessage handleMessage(Update update) {
-        return buttonService.setReplyKeyboardButton(update.getMessage(), BoardConfigService.parseBoardsNames());
+        boardConfigService.uploadData();
+        return buttonService.setReplyKeyboardButton(update.getMessage(), boardConfigService.parseBoardsNames());
     }
 
     @Override

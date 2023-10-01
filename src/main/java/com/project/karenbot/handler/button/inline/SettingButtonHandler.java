@@ -23,6 +23,7 @@ import static com.project.karenbot.enums.Tags.SETTING_TAG;
 public class SettingButtonHandler extends AbstractMessageHandler {
 
     private final ButtonService buttonService;
+    private final BoardConfigService boardConfigService;
 
     @Override
     public boolean canHandle(Update update, boolean user) {
@@ -36,7 +37,7 @@ public class SettingButtonHandler extends AbstractMessageHandler {
         String callbackData = update.getCallbackQuery().getData();
         String boardName = callbackData.split("_")[0];
         String settingName = callbackData.split("_")[1];
-        List<Device> devices = BoardConfigService.getSettingByName(boardName, settingName);
+        List<Device> devices = boardConfigService.getSettingByName(boardName, settingName);
         HashMap<String, String> moduleData = new HashMap<>();
         for (Device device: devices) {
             for (Data data: device.getData()) {
