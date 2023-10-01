@@ -56,10 +56,9 @@ public class BotService extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         Message message = update.getMessage();
         try {
-            if (update.hasCallbackQuery()) {
-            } else if (message != null && message.hasText()) {
+            if ((message != null && message.hasText()) || (message != null && update.hasCallbackQuery())) {
                 Optional<AbstractMessageHandler> handler = messageHandlers.stream()
-                        .filter(it -> it.canHandle(update, checkUser(message)))
+                        .filter(it -> it.canHandle(update, checkUser(update)))
                         .findFirst();
                 if (handler.isPresent()) {
                     switch (handler.get().getTypeOfMethod()) {
@@ -98,8 +97,8 @@ public class BotService extends TelegramLongPollingBot {
         }
     }
 
-    private boolean checkUser(Message message) {
-        String chatId = message.getChatId().toString();
+    private boolean checkUser(Update update) {
+        String chatId = update.getMessage().getChatId().toString();
         return userService.getUsers().contains(chatId);
     }
 }

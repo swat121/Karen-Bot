@@ -15,17 +15,19 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.project.karenbot.enums.Tags.MODULE_TAG;
+import static com.project.karenbot.enums.Tags.SETTING_TAG;
+
 @Component
 @AllArgsConstructor
 public class SettingButtonHandler extends AbstractMessageHandler {
 
-    private List<String> settingNames = Arrays.asList("sensor", "switcher");
     private final ButtonService buttonService;
 
     @Override
     public boolean canHandle(Update update, boolean user) {
         return  update.hasCallbackQuery()
-                && settingNames.contains(update.getCallbackQuery().getData().split("_")[1])
+                && Arrays.stream(update.getCallbackQuery().getData().split("_")).anyMatch((el) -> el.equalsIgnoreCase(SETTING_TAG.getTag()))
                 && user;
     }
 
@@ -38,7 +40,10 @@ public class SettingButtonHandler extends AbstractMessageHandler {
         HashMap<String, String> moduleData = new HashMap<>();
         for (Device device: devices) {
             for (Data data: device.getData()) {
-                moduleData.put(device.getModuleName(), callbackData + "_" + device.getModuleName() + "_" + data.getModuleId());
+                moduleData.put(device.getModuleName(), boardName + "_" +
+                                settingName + "_" +
+                                device.getModuleName() + "_" +
+                                data.getModuleId() + "_" + MODULE_TAG.getTag());
             }
         }
         return buttonService.setInlineKeyboardButton(update.getMessage(), moduleData);

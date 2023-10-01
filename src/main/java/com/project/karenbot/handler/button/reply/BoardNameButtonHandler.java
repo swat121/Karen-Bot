@@ -11,6 +11,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.HashMap;
 
+import static com.project.karenbot.enums.Tags.SETTING_TAG;
+
 @Component
 @AllArgsConstructor
 public class BoardNameButtonHandler extends AbstractMessageHandler {
@@ -27,9 +29,9 @@ public class BoardNameButtonHandler extends AbstractMessageHandler {
     public SendMessage handleMessage(Update update) {
         HashMap<String, String> settingNames = new HashMap<>();
         String boardName = update.getMessage().getText();
-        settingNames.put("Sensors", boardName + "_sensors");
-        settingNames.put("Trackers", boardName + "_trackers");
-        settingNames.put("Switchers", boardName + "_switchers");
+        settingNames.put("Sensors", boardName + "_sensors_" + SETTING_TAG.getTag());
+        settingNames.put("Trackers", boardName + "_trackers_" + SETTING_TAG.getTag());
+        settingNames.put("Switchers", boardName + "_switchers_" + SETTING_TAG.getTag());
         return buttonService.setInlineKeyboardButton(update.getMessage(), settingNames);
     }
 
