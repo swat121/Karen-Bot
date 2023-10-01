@@ -1,6 +1,8 @@
 package com.project.karenbot.service;
 
 import com.project.karenbot.config.BotConfig;
+import com.project.karenbot.dto.ExternalUser;
+import com.project.karenbot.dto.Notify;
 import com.project.karenbot.handler.AbstractMessageHandler;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -21,10 +23,14 @@ public class BotService extends TelegramLongPollingBot {
 
     private final BotConfig botConfig;
     private final List<AbstractMessageHandler> messageHandlers;
+    private final UserService userService;
 
     @PreDestroy
     public void shutdown() {
-        sendMsg("Bot stopped");
+        sendMessage(Notify.builder()
+                .message("Bot stopped")
+                .telegramIds(userService.getUsers())
+                .build());
     }
 
     @Override
@@ -39,7 +45,10 @@ public class BotService extends TelegramLongPollingBot {
 
     @Override
     public void onRegister() {
-        sendMsg("Bot rebooted");
+        sendMessage(Notify.builder()
+                .message("Bot rebooted")
+                .telegramIds(userService.getUsers())
+                .build());
     }
 
     @Override
@@ -47,7 +56,8 @@ public class BotService extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         Message message = update.getMessage();
         try {
-            if (message != null && message.hasText()) {
+            if (update.hasCallbackQuery()) {
+            } else if (message != null && message.hasText()) {
                 Optional<AbstractMessageHandler> handler = messageHandlers.stream()
                         .filter(it -> it.canHandle(update, checkUser(message)))
                         .findFirst();
@@ -60,16 +70,16 @@ public class BotService extends TelegramLongPollingBot {
                         case SendSticker -> execute(handler.get().<SendSticker>handleMessage(update));
                     }
                 } else {
-                    sendMsg(message, "The command is not exist or you are not in the user list");
+                    sendMessage(message, "The command is not exist or you are not in the user list");
                 }
             }
         } catch (Exception e) {
-            sendMsg(message, e.getMessage());
+            sendMessage(message, e.getMessage());
         }
     }
 
     @SneakyThrows
-    public void sendMsg(Message message, String text) {
+    public void sendMessage(Message message, String text) {
         execute(SendMessage
                 .builder()
                 .chatId(message.getChatId().toString())
@@ -78,16 +88,18 @@ public class BotService extends TelegramLongPollingBot {
     }
 
     @SneakyThrows
-    public void sendMsg(String text) {
-        execute(SendMessage
-                .builder()
-                .chatId(botConfig.getUsers().split(",")[0])
-                .text(text)
-                .build());
+    public void sendMessage(Notify data) {
+        for (String id : data.getTelegramIds()) {
+            execute(SendMessage
+                    .builder()
+                    .chatId(id)
+                    .text(data.getMessage())
+                    .build());
+        }
     }
 
     private boolean checkUser(Message message) {
         String chatId = message.getChatId().toString();
-        return Arrays.asList(botConfig.getUsers().split(",")).contains(chatId);
+        return userService.getUsers().contains(chatId);
     }
 }

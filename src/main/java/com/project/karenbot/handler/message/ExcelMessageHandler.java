@@ -1,6 +1,6 @@
 package com.project.karenbot.handler.message;
 
-import com.project.karenbot.dto.Temperature;
+import com.project.karenbot.dto.Sensor;
 import com.project.karenbot.handler.AbstractMessageHandler;
 import com.project.karenbot.enums.Types;
 import com.project.karenbot.service.ConnectionService;
@@ -44,16 +44,17 @@ public class ExcelMessageHandler extends AbstractMessageHandler {
 
     @SneakyThrows
     private File getExcelFile() {
-        Temperature[] temperatures = connectionService.getObjectFromService(KAREN_DATA.getName(), "/api/temps", Temperature[].class);
+        Sensor[] sensors = connectionService.getObjectFromService(KAREN_DATA.getTitle(), "/api/sensors", Sensor[].class);
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("Data");
 
         int rowNum = 0;
-        for (Temperature temperature : temperatures) {
+        for (Sensor sensor : sensors) {
             Row row = sheet.createRow(rowNum++);
-            row.createCell(0).setCellValue(String.valueOf(temperature.getDate()));
-            row.createCell(1).setCellValue(String.valueOf(temperature.getTime()));
-            row.createCell(2).setCellValue(temperature.getDegreesCelsius());
+            row.createCell(0).setCellValue(String.valueOf(sensor.getDate()));
+            row.createCell(1).setCellValue(String.valueOf(sensor.getTime()));
+            row.createCell(2).setCellValue(sensor.getName());
+            row.createCell(3).setCellValue(sensor.getData());
         }
 
         File tempFile = File.createTempFile("data", ".xlsx");

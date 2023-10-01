@@ -5,32 +5,21 @@ import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Service
 public class ButtonService {
-    @SneakyThrows
-    public SendMessage sendMsgForButton(Message message, String[] nameFirstButtons, String[] nameSecondButtons) {
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.enableMarkdown(true);
-        sendMessage.setChatId(message.getChatId().toString());
-        sendMessage.setReplyToMessageId(message.getMessageId());
-        sendMessage.setText("You have some buttons for control home and command messages: \n" +
-                Arrays.stream(Messages.values())
-                .map(Messages::getMessage)
-                .toList());
-        setButton(sendMessage, nameFirstButtons, nameSecondButtons);
-        return sendMessage;
-    }
 
-    public void setButton(SendMessage sendMessage, String[] nameFirstButtons, String[] nameSecondButtons) {
+    public SendMessage setReplyKeyboardButton(Message message, List<String> buttons, Optional<String> text) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(message.getChatId().toString());
+
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         sendMessage.setReplyMarkup(replyKeyboardMarkup);
         replyKeyboardMarkup.setSelective(true);
@@ -39,16 +28,48 @@ public class ButtonService {
 
         List<KeyboardRow> keyboardRowList = new ArrayList<>();
         KeyboardRow keyboardRowFirst = new KeyboardRow();
-        KeyboardRow keyboardRowSecond = new KeyboardRow();
 
-        for (int i = 0; i < nameFirstButtons.length; i++) {
-            keyboardRowFirst.add(new KeyboardButton(nameFirstButtons[i]));
-        }
-        for (int i = 0; i < nameSecondButtons.length; i++) {
-            keyboardRowSecond.add(new KeyboardButton(nameSecondButtons[i]));
+        for (String button : buttons) {
+            keyboardRowFirst.add(new KeyboardButton(button));
         }
         keyboardRowList.add(keyboardRowFirst);
-        keyboardRowList.add(keyboardRowSecond);
         replyKeyboardMarkup.setKeyboard(keyboardRowList);
+
+        sendMessage.setReplyMarkup(replyKeyboardMarkup);
+
+        text.ifPresent(sendMessage::setText);
+        return sendMessage;
+    }
+
+    public SendMessage setReplyKeyboardButton(Message message, List<String> buttons) {
+        return setReplyKeyboardButton(message, buttons, Optional.empty());
+    }
+
+    public SendMessage setInlineKeyboardButton(Message message, HashMap<String, String> buttons, Optional<String> text) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(message.getChatId().toString());
+
+        List<InlineKeyboardButton> row = new ArrayList<>();
+        for (Map.Entry<String, String> entry : buttons.entrySet()) {
+            InlineKeyboardButton button = new InlineKeyboardButton();
+            button.setText(entry.getKey());
+            button.setCallbackData(entry.getValue());
+            row.add(button);
+        }
+
+        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+        keyboard.add(row);
+
+        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+        markup.setKeyboard(keyboard);
+
+        sendMessage.setReplyMarkup(markup);
+
+        text.ifPresent(sendMessage::setText);
+        return sendMessage;
+    }
+
+    public SendMessage setInlineKeyboardButton(Message message, HashMap<String, String> buttons) {
+        return setInlineKeyboardButton(message, buttons, Optional.empty());
     }
 }
