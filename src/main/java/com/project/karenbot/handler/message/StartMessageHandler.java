@@ -28,7 +28,7 @@ public class StartMessageHandler extends AbstractMessageHandler {
     @Override
     public SendMessage handleMessage(Update update) {
         boardConfigService.uploadData();
-        return buttonService.setReplyKeyboardButton(update.getMessage(), boardConfigService.parseBoardsNames());
+        return buttonService.setReplyKeyboardButton(update.getMessage(), boardConfigService.parseBoardsNames(), "Your board");
     }
 
     @Override

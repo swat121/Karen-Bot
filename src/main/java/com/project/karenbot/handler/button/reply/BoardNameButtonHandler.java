@@ -33,7 +33,7 @@ public class BoardNameButtonHandler extends AbstractMessageHandler {
         settingNames.put("Sensors", boardName + "_sensors_" + SETTING_TAG.getTag());
         settingNames.put("Trackers", boardName + "_trackers_" + SETTING_TAG.getTag());
         settingNames.put("Switchers", boardName + "_switchers_" + SETTING_TAG.getTag());
-        return buttonService.setInlineKeyboardButton(update.getMessage(), settingNames);
+        return buttonService.setInlineKeyboardButton(update.getMessage(), settingNames, "Setting of board");
     }
 
     @Override

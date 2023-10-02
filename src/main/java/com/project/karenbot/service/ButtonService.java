@@ -16,7 +16,8 @@ import java.util.*;
 @Service
 public class ButtonService {
 
-    public SendMessage setReplyKeyboardButton(Message message, List<String> buttons, Optional<String> text) {
+    //TODO удалять предыдущие кнопки что к ним не было доступа
+    public SendMessage setReplyKeyboardButton(Message message, List<String> buttons, String text) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(message.getChatId().toString());
 
@@ -36,16 +37,12 @@ public class ButtonService {
         replyKeyboardMarkup.setKeyboard(keyboardRowList);
 
         sendMessage.setReplyMarkup(replyKeyboardMarkup);
+        sendMessage.setText(text);
 
-        text.ifPresent(sendMessage::setText);
         return sendMessage;
     }
 
-    public SendMessage setReplyKeyboardButton(Message message, List<String> buttons) {
-        return setReplyKeyboardButton(message, buttons, Optional.empty());
-    }
-
-    public SendMessage setInlineKeyboardButton(Message message, HashMap<String, String> buttons, Optional<String> text) {
+    public SendMessage setInlineKeyboardButton(Message message, HashMap<String, String> buttons, String text) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(message.getChatId().toString());
 
@@ -64,12 +61,8 @@ public class ButtonService {
         markup.setKeyboard(keyboard);
 
         sendMessage.setReplyMarkup(markup);
+        sendMessage.setText(text);
 
-        text.ifPresent(sendMessage::setText);
         return sendMessage;
-    }
-
-    public SendMessage setInlineKeyboardButton(Message message, HashMap<String, String> buttons) {
-        return setInlineKeyboardButton(message, buttons, Optional.empty());
     }
 }

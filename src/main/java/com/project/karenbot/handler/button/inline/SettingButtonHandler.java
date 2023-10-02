@@ -7,6 +7,8 @@ import com.project.karenbot.handler.AbstractMessageHandler;
 import com.project.karenbot.service.BoardConfigService;
 import com.project.karenbot.service.ButtonService;
 import lombok.AllArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -21,6 +23,7 @@ import static com.project.karenbot.enums.Tags.SETTING_TAG;
 @Component
 @AllArgsConstructor
 public class SettingButtonHandler extends AbstractMessageHandler {
+    private static final Logger LOG = LogManager.getRootLogger();
 
     private final ButtonService buttonService;
     private final BoardConfigService boardConfigService;
@@ -47,11 +50,12 @@ public class SettingButtonHandler extends AbstractMessageHandler {
                                 data.getModuleId() + "_" + MODULE_TAG.getTag());
             }
         }
-        return buttonService.setInlineKeyboardButton(update.getMessage(), moduleData);
+
+        return buttonService.setInlineKeyboardButton(update.getCallbackQuery().getMessage(), moduleData, "Modules");
     }
 
     @Override
     public Types getTypeOfMethod() {
-        return null;
+        return Types.SendMessage;
     }
 }

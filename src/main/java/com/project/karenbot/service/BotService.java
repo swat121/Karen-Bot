@@ -6,6 +6,8 @@ import com.project.karenbot.dto.Notify;
 import com.project.karenbot.handler.AbstractMessageHandler;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.*;
@@ -24,7 +26,9 @@ public class BotService extends TelegramLongPollingBot {
     private final BotConfig botConfig;
     private final List<AbstractMessageHandler> messageHandlers;
     private final UserService userService;
+    private static final Logger LOG = LogManager.getRootLogger();
 
+    //TODO подставлять чат айди по другому
     @PreDestroy
     public void shutdown() {
         sendMessage(Notify.builder()
@@ -43,6 +47,7 @@ public class BotService extends TelegramLongPollingBot {
         return botConfig.getToken();
     }
 
+    //TODO подставлять чат айди по другому
     @Override
     public void onRegister() {
         sendMessage(Notify.builder()
@@ -56,7 +61,7 @@ public class BotService extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         Message message = update.getMessage();
         try {
-            if ((message != null && message.hasText()) || (message != null && update.hasCallbackQuery())) {
+            if ((message != null && message.hasText()) || update.hasCallbackQuery()) {
                 Optional<AbstractMessageHandler> handler = messageHandlers.stream()
                         .filter(it -> it.canHandle(update, checkUser(update)))
                         .findFirst();
@@ -69,16 +74,17 @@ public class BotService extends TelegramLongPollingBot {
                         case SendSticker -> execute(handler.get().<SendSticker>handleMessage(update));
                     }
                 } else {
-                    sendMessage(message, "The command is not exist or you are not in the user list");
+                    sendMessage(update, "The command is not exist or you are not in the user list");
                 }
             }
         } catch (Exception e) {
-            sendMessage(message, e.getMessage());
+            sendMessage(update, e.getMessage());
         }
     }
 
     @SneakyThrows
-    public void sendMessage(Message message, String text) {
+    public void sendMessage(Update update, String text) {
+        Message message = update.hasCallbackQuery() ? update.getCallbackQuery().getMessage() : update.getMessage();
         execute(SendMessage
                 .builder()
                 .chatId(message.getChatId().toString())
@@ -98,7 +104,8 @@ public class BotService extends TelegramLongPollingBot {
     }
 
     private boolean checkUser(Update update) {
-        String chatId = update.getMessage().getChatId().toString();
+        Message message = update.hasCallbackQuery() ? update.getCallbackQuery().getMessage() : update.getMessage();
+        String chatId = message.getChatId().toString();
         return userService.getUsers().contains(chatId);
     }
 }

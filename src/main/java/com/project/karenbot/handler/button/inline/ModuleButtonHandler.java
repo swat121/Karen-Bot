@@ -39,7 +39,7 @@ public class ModuleButtonHandler extends AbstractMessageHandler {
         String response = connectionService.getResponseFromService(KAREN.name(), url, String.class);
 
         SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(update.getMessage().getChatId().toString());
+        sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId().toString());
         sendMessage.setText(response);
         return sendMessage;
     }
