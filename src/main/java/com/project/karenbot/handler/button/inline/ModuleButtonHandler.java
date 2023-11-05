@@ -36,7 +36,12 @@ public class ModuleButtonHandler extends AbstractMessageHandler {
         String moduleId = callbackData[3];
 
         String url = String.format("/api/v1/%s/%s/%s/%s", boardName, settingName, moduleName, moduleId);
-        String response = connectionService.getResponseFromService(KAREN.name(), url, String.class);
+
+        String response = switch (settingName) {
+            case "switchers" -> connectionService.putRequestForService(KAREN.name(), url, null);
+            case "sensors" -> connectionService.getResponseFromService(KAREN.name(), url, String.class);
+            default -> "Setting not found";
+        };
 
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId().toString());
