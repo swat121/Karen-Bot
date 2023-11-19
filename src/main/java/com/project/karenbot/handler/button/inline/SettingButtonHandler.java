@@ -1,6 +1,5 @@
 package com.project.karenbot.handler.button.inline;
 
-import com.project.karenbot.dto.board.Data;
 import com.project.karenbot.dto.board.Device;
 import com.project.karenbot.enums.Types;
 import com.project.karenbot.handler.AbstractMessageHandler;
@@ -30,7 +29,7 @@ public class SettingButtonHandler extends AbstractMessageHandler {
 
     @Override
     public boolean canHandle(Update update, boolean user) {
-        return  update.hasCallbackQuery()
+        return update.hasCallbackQuery()
                 && Arrays.stream(update.getCallbackQuery().getData().split("_")).anyMatch((el) -> el.equalsIgnoreCase(SETTING_TAG.getTag()))
                 && user;
     }
@@ -42,13 +41,12 @@ public class SettingButtonHandler extends AbstractMessageHandler {
         String settingName = callbackData.split("_")[1];
         List<Device> devices = boardConfigService.getSettingByName(boardName, settingName);
         HashMap<String, String> moduleData = new HashMap<>();
-        for (Device device: devices) {
-            for (Data data: device.getData()) {
-                moduleData.put(device.getModuleName(), boardName + "_" +
-                                settingName + "_" +
-                                device.getModuleName() + "_" +
-                                data.getModuleId() + "_" + MODULE_TAG.getTag());
-            }
+        for (Device device : devices) {
+            moduleData.put(device.getModuleName(), boardName + "_" +
+                    settingName + "_" +
+                    device.getModuleName()
+                    + "_" + MODULE_TAG.getTag());
+
         }
 
         return buttonService.setInlineKeyboardButton(update.getCallbackQuery().getMessage(), moduleData, "Modules");

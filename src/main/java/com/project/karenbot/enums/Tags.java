@@ -5,7 +5,9 @@ import lombok.Getter;
 @Getter
 public enum Tags {
     SETTING_TAG("setting"),
-    MODULE_TAG("module");
+    MODULE_TAG("module"),
+
+    ACTION_TAG("action");
 
     private final String tag;
     Tags(String tag) {

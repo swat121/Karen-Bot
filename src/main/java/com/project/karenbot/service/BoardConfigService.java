@@ -4,7 +4,6 @@ import com.project.karenbot.dto.board.BoardConfig;
 import com.project.karenbot.dto.board.Device;
 import com.project.karenbot.enums.Services;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -30,7 +29,7 @@ public class BoardConfigService {
         return boardConfigList.stream().map(BoardConfig::getName).toList();
     }
 
-    public List<Device > getSettingByName(String boardName, String setting) {
+    public List<Device> getSettingByName(String boardName, String setting) {
         return boardConfigList.stream()
                 .filter(el -> el.getName().equalsIgnoreCase(boardName))
                 .map(BoardConfig::getSetting)
@@ -45,5 +44,4 @@ public class BoardConfigService {
                 .findFirst()
                 .orElse(Collections.emptyList());
     }
-
 }
