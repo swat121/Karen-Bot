@@ -6,7 +6,6 @@ import com.project.karenbot.enums.Types;
 import com.project.karenbot.handler.AbstractMessageHandler;
 import com.project.karenbot.service.BoardConfigService;
 import com.project.karenbot.service.ButtonService;
-import com.project.karenbot.service.ConnectionService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -23,7 +22,6 @@ import static com.project.karenbot.enums.Tags.MODULE_TAG;
 @AllArgsConstructor
 public class ModuleButtonHandler extends AbstractMessageHandler {
 
-    private final ConnectionService connectionService;
     private final BoardConfigService boardConfigService;
     private final ButtonService buttonService;
 
@@ -41,15 +39,6 @@ public class ModuleButtonHandler extends AbstractMessageHandler {
         String boardName = callbackData[0];
         String settingName = callbackData[1];
         String moduleName = callbackData[2];
-        //String moduleId = callbackData[3];
-
-//        String url = String.format("/api/v1/%s/%s/%s/%s", boardName, settingName, moduleName, moduleId);
-//
-//        String response = switch (settingName) {
-//            case "switchers" -> connectionService.putRequestForService(KAREN.name(), url, null);
-//            case "sensors" -> connectionService.getResponseFromService(KAREN.name(), url, String.class);
-//            default -> "Setting not found";
-//        };
 
         List<Device> devices = boardConfigService.getSettingByName(boardName, settingName);
         Device device = devices.stream().filter((el) -> el.getModuleName().equalsIgnoreCase(moduleName)).findFirst().orElse(null);
@@ -64,12 +53,6 @@ public class ModuleButtonHandler extends AbstractMessageHandler {
         }
 
         return buttonService.setInlineKeyboardButton(update.getCallbackQuery().getMessage(), moduleData, "Device data");
-
-
-//        SendMessage sendMessage = new SendMessage();
-//        sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId().toString());
-//        sendMessage.setText(response);
-//        return sendMessage;
     }
 
     @Override

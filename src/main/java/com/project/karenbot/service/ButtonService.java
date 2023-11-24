@@ -1,7 +1,5 @@
 package com.project.karenbot.service;
 
-import com.project.karenbot.enums.Messages;
-import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;

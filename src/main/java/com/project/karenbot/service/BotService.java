@@ -1,7 +1,6 @@
 package com.project.karenbot.service;
 
 import com.project.karenbot.config.BotConfig;
-import com.project.karenbot.dto.ExternalUser;
 import com.project.karenbot.dto.Notify;
 import com.project.karenbot.handler.AbstractMessageHandler;
 import lombok.AllArgsConstructor;
@@ -15,7 +14,6 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import javax.annotation.PreDestroy;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +26,6 @@ public class BotService extends TelegramLongPollingBot {
     private final UserService userService;
     private static final Logger LOG = LogManager.getRootLogger();
 
-    //TODO подставлять чат айди по другому
     @PreDestroy
     public void shutdown() {
         sendMessage(Notify.builder()
@@ -48,13 +45,13 @@ public class BotService extends TelegramLongPollingBot {
     }
 
     //TODO подставлять чат айди по другому
-    @Override
-    public void onRegister() {
-        sendMessage(Notify.builder()
-                .message("Bot rebooted")
-                .telegramIds(userService.getUsers())
-                .build());
-    }
+//    @Override
+//    public void onRegister() {
+//        sendMessage(Notify.builder()
+//                .message("Bot rebooted")
+//                .telegramIds(userService.getUsers())
+//                .build());
+//    }
 
     @Override
     @SneakyThrows

@@ -1,11 +1,7 @@
 package com.project.karenbot.handler.button.inline;
 
-import com.project.karenbot.dto.board.Data;
-import com.project.karenbot.dto.board.Device;
 import com.project.karenbot.enums.Types;
 import com.project.karenbot.handler.AbstractMessageHandler;
-import com.project.karenbot.service.BoardConfigService;
-import com.project.karenbot.service.ButtonService;
 import com.project.karenbot.service.ConnectionService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -13,12 +9,9 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 
 import static com.project.karenbot.enums.Services.KAREN;
 import static com.project.karenbot.enums.Tags.ACTION_TAG;
-import static com.project.karenbot.enums.Tags.MODULE_TAG;
 
 @Component
 @AllArgsConstructor
