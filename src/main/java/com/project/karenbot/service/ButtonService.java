@@ -63,4 +63,28 @@ public class ButtonService {
 
         return sendMessage;
     }
+
+    public SendMessage updateInlineKeyboardButton(Message message, HashMap<String, String> buttons, String text) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(message.getChatId().toString());
+
+        List<InlineKeyboardButton> row = new ArrayList<>();
+        for (Map.Entry<String, String> entry : buttons.entrySet()) {
+            InlineKeyboardButton button = new InlineKeyboardButton();
+            button.setText(entry.getKey());
+            button.setCallbackData(entry.getValue());
+            row.add(button);
+        }
+
+        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+        keyboard.add(row);
+
+        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+        markup.setKeyboard(keyboard);
+
+        sendMessage.setReplyMarkup(markup);
+        sendMessage.setText(text);
+
+        return sendMessage;
+    }
 }
