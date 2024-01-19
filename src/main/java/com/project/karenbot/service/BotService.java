@@ -7,8 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.send.*;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -98,6 +100,11 @@ public class BotService extends TelegramLongPollingBot {
                     .text(data.getMessage())
                     .build());
         }
+    }
+
+    @SneakyThrows
+    public void executeButtonCallback(AnswerCallbackQuery answerCallbackQuery) {
+        execute(answerCallbackQuery);
     }
 
     private boolean checkUser(Update update) {

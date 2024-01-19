@@ -4,13 +4,19 @@ import com.project.karenbot.dto.board.Device;
 import com.project.karenbot.enums.Types;
 import com.project.karenbot.handler.AbstractMessageHandler;
 import com.project.karenbot.service.BoardConfigService;
+import com.project.karenbot.service.BotService;
 import com.project.karenbot.service.ButtonService;
+import com.project.karenbot.service.CommonService;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -24,8 +30,16 @@ import static com.project.karenbot.enums.Tags.SETTING_TAG;
 public class SettingButtonHandler extends AbstractMessageHandler {
     private static final Logger LOG = LogManager.getRootLogger();
 
+    private final CommonService commonService;
+
+    private ApplicationContext applicationContext;
+
+    private BotService getBotService() {
+        return applicationContext.getBean(BotService.class);
+    }
+
     private final ButtonService buttonService;
-    private final BoardConfigService boardConfigService;
+
 
     @Override
     public boolean canHandle(Update update, boolean user) {
@@ -36,20 +50,15 @@ public class SettingButtonHandler extends AbstractMessageHandler {
 
     @Override
     public SendMessage handleMessage(Update update) {
-        String callbackData = update.getCallbackQuery().getData();
-        String boardName = callbackData.split("_")[0];
-        String settingName = callbackData.split("_")[1];
-        List<Device> devices = boardConfigService.getSettingByName(boardName, settingName);
-        HashMap<String, String> moduleData = new HashMap<>();
-        for (Device device : devices) {
-            moduleData.put(device.getModuleName(), boardName + "_" +
-                    settingName + "_" +
-                    device.getModuleName()
-                    + "_" + MODULE_TAG.getTag());
+        HashMap<String, String> moduleData = commonService.parseSettingCallbackData(update.getCallbackQuery().getData());
 
-        }
+        AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
+        answerCallbackQuery.setCallbackQueryId(update.getCallbackQuery().getId());
+        answerCallbackQuery.setText("Completed");
+        BotService botService = getBotService();
+        botService.executeButtonCallback(answerCallbackQuery);
 
-        return buttonService.setInlineKeyboardButton(update.getCallbackQuery().getMessage(), moduleData, "Modules");
+        return buttonService.setInlineKeyboardButton(update.getCallbackQuery().getMessage(), moduleData, "Modules by category");
     }
 
     @Override

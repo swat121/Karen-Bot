@@ -26,9 +26,7 @@ public class ConnectionService {
         return restTemplate.getForObject(URI.create("https://" + name).resolve(url).toString(), responseType);
     }
 
-    public <T> String putRequestForService(String name, String url, @Nullable HttpEntity<T> request) {
+    public <T> void putRequestForService(String name, String url, @Nullable HttpEntity<T> request) {
         restTemplate.put(URI.create("https://" + name).resolve(url).toString(), request);
-        // TODO fix return
-        return "String";
     }
 }

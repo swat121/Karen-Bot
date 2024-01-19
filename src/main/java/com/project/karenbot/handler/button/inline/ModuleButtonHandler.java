@@ -5,9 +5,13 @@ import com.project.karenbot.dto.board.Device;
 import com.project.karenbot.enums.Types;
 import com.project.karenbot.handler.AbstractMessageHandler;
 import com.project.karenbot.service.BoardConfigService;
+import com.project.karenbot.service.BotService;
 import com.project.karenbot.service.ButtonService;
+import com.project.karenbot.service.CommonService;
 import lombok.AllArgsConstructor;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -22,8 +26,15 @@ import static com.project.karenbot.enums.Tags.MODULE_TAG;
 @AllArgsConstructor
 public class ModuleButtonHandler extends AbstractMessageHandler {
 
-    private final BoardConfigService boardConfigService;
     private final ButtonService buttonService;
+
+    private final CommonService commonService;
+
+    private ApplicationContext applicationContext;
+
+    private BotService getBotService() {
+        return applicationContext.getBean(BotService.class);
+    }
 
 
     @Override
@@ -35,22 +46,13 @@ public class ModuleButtonHandler extends AbstractMessageHandler {
 
     @Override
     public SendMessage handleMessage(Update update) {
-        String[] callbackData = update.getCallbackQuery().getData().split("_");
-        String boardName = callbackData[0];
-        String settingName = callbackData[1];
-        String moduleName = callbackData[2];
+        HashMap<String, String> moduleData = commonService.parseModuleCallbackData(update.getCallbackQuery().getData());
 
-        List<Device> devices = boardConfigService.getSettingByName(boardName, settingName);
-        Device device = devices.stream().filter((el) -> el.getModuleName().equalsIgnoreCase(moduleName)).findFirst().orElse(null);
-        HashMap<String, String> moduleData = new HashMap<>();
-        for (Data data : device.getData()) {
-            moduleData.put(moduleName + data.getModuleId(),
-                    boardName + "_" +
-                            settingName + "_" +
-                            moduleName + "_" +
-                            data.getModuleId() + "_" +
-                            ACTION_TAG.getTag());
-        }
+        AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
+        answerCallbackQuery.setCallbackQueryId(update.getCallbackQuery().getId());
+        answerCallbackQuery.setText("Completed");
+        BotService botService = getBotService();
+        botService.executeButtonCallback(answerCallbackQuery);
 
         return buttonService.setInlineKeyboardButton(update.getCallbackQuery().getMessage(), moduleData, "Device data");
     }
