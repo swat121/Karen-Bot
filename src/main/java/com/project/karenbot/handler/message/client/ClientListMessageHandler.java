@@ -41,6 +41,6 @@ public class ClientListMessageHandler extends AbstractMessageHandler {
     }
 
     private List<Client> getClients() {
-        return List.of(connectionService.getObjectFromService(KAREN_DATA.getName(), "/clients", Client[].class));
+        return List.of(connectionService.getObjectFromService(KAREN_DATA.getTitle(), "/api/v1/clients", Client[].class));
     }
 }

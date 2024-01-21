@@ -28,7 +28,7 @@ public class DeleteListMessageHandler extends AbstractMessageHandler {
     public SendMessage handleMessage(Update update) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(update.getMessage().getChatId().toString());
-        connectionService.delete(KAREN_DATA.getName(), "/clients");
+        connectionService.delete(KAREN_DATA.getTitle(), "/api/v1/clients");
         sendMessage.setText("All client deleted");
         return sendMessage;
     }

@@ -27,7 +27,7 @@ public class PingMessageHandler extends AbstractMessageHandler {
     public SendMessage handleMessage(Update update) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(update.getMessage().getChatId().toString());
-        sendMessage.setText(connectionService.getResponseFromService(KAREN.getName(),"/ping", String.class));
+        sendMessage.setText(connectionService.getResponseFromService(KAREN.getTitle(),"/ping", String.class));
         return sendMessage;
     }
 
