@@ -8,5 +8,4 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class BotConfig {
     private String token;
     private String id;
-    private String users;
 }
